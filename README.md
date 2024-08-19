@@ -1,3 +1,4 @@
+
 Laboration 2 - Habit Tracker App
 
 📱 Project Overview
@@ -50,20 +51,16 @@ cdk deploy
 Run the app:
 
 In Android Studio, select your device and run the app.
-
 📈 Usage
 Creating a Habit: Tap on the "Add Habit" button, enter details like habit name, frequency, and goals.
 Tracking Progress: Mark habits as completed each day, and monitor progress on the dashboard.
 View Statistics: Navigate to the statistics page to see insights into your habit performance over time.
-
 📖 Documentation
 API Documentation: Link to your API documentation if you have one.
 AWS CDK Documentation: Brief guide on how the AWS resources are structured and how they interact with the app.
-
 🛡️ License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 👥 Contributors
 Your Name - undvall
-
 Björne - Course instructor
