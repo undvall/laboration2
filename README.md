@@ -31,9 +31,9 @@ Guide coming soon.
 
 ## 📈 Usage
 
-Creating a Habit: Tap on the "Add Habit" button, enter details like habit name, frequency, and goals.
-Tracking Progress: Mark habits as completed each day, and monitor progress on the dashboard.
-View Statistics: Navigate to the statistics page to see insights into your habit performance over time.
+- Creating a Habit: Tap on the "Add Habit" button, enter details like habit name, frequency, and goals. 
+- Tracking Progress: Mark habits as completed each day, and monitor progress on the dashboard. 
+- View Statistics: Navigate to the statistics page to see insights into your habit performance over time.
 
 ## 📖 Documentation
 
