@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.laboration2.ui.theme.Laboration2Theme
@@ -70,6 +70,8 @@ fun HabitTrackerScreen(navController: NavHostController) {
 fun HabitCreationScreen() {
     var habitName by remember { mutableStateOf("")}
     var frequency by remember { mutableStateOf("")}
+
+    val habitList = remember { mutableStateListOf<Habit>() }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,8 +95,24 @@ fun HabitCreationScreen() {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* Handle habit creation */ }) {
+        Button(onClick = {
+            // This creates the habit and adds it into a list
+            if (habitName.isNotEmpty() && frequency.isNotEmpty()) {
+                habitList.add(Habit(habitName, frequency))
+                // Clearing the input fields
+                habitName = ""
+                frequency = ""
+            }
+        }) {
             Text("Save Habit")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column {
+            for (habit in habitList) {
+                Text(text = "Habit: ${habit.name}, Frequency: ${habit.frequency}")
+            }
         }
     }
 }
