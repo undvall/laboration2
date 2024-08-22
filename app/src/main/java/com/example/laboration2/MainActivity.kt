@@ -5,11 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,9 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.example.laboration2.data.models.Frequency
+import com.example.laboration2.data.models.Habit
 import com.example.laboration2.ui.theme.Laboration2Theme
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +75,10 @@ fun HabitTrackerScreen(navController: NavHostController) {
 @Composable
 fun HabitCreationScreen() {
     var habitName by remember { mutableStateOf("")}
-    var frequency by remember { mutableStateOf("")}
+    var frequencyType by remember { mutableStateOf<Frequency?>(null) }
+
+    var timeBasedMinutes by remember { mutableStateOf("") }
+    var repetitionBasedTimes by remember { mutableStateOf("") }
 
     val habitList = remember { mutableStateListOf<Habit>() }
     Column(
@@ -88,20 +97,65 @@ fun HabitCreationScreen() {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = frequency,
-            onValueChange = { newValue -> frequency = newValue },
-            label = { Text("Frequency") },
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        // Radio buttons to select the type of frequency
+        Text(text = "Frequency Type")
+        Row {
+            RadioButton(
+                selected = frequencyType is Frequency.TimeMinuteBased,
+                onClick = { frequencyType = Frequency.TimeMinuteBased(0) }
+            )
+            Text("Time Based (e.g., 20 minutes)")
+            Spacer(modifier = Modifier.width(8.dp))
+            RadioButton(
+                selected = frequencyType is Frequency.RepetitionBased,
+                onClick = { frequencyType = Frequency.RepetitionBased(0) }
+            )
+            Text("Repetition Based (e.g., 3 times a week)")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Display the appropriate input field based on the selected frequency type
+        when (frequencyType) {
+            is Frequency.TimeMinuteBased -> {
+                OutlinedTextField(
+                    value = timeBasedMinutes,
+                    onValueChange = { newValue -> timeBasedMinutes = newValue },
+                    label = { Text("Minutes per Session") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+            }
+            is Frequency.RepetitionBased -> {
+                OutlinedTextField(
+                    value = repetitionBasedTimes,
+                    onValueChange = { newValue -> repetitionBasedTimes = newValue },
+                    label = { Text("Times per Week") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+            }
+            else -> {}
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Save Habit Button
         Button(onClick = {
-            // This creates the habit and adds it into a list
-            if (habitName.isNotEmpty() && frequency.isNotEmpty()) {
+            // Create the frequency based on user input
+            val frequency = when (frequencyType) {
+                is Frequency.TimeMinuteBased -> Frequency.TimeMinuteBased(timeBasedMinutes.toIntOrNull() ?: 0)
+                is Frequency.RepetitionBased -> Frequency.RepetitionBased(repetitionBasedTimes.toIntOrNull() ?: 0)
+                else -> null
+            }
+
+            if (habitName.isNotEmpty() && frequency != null) {
                 habitList.add(Habit(habitName, frequency))
-                // Clearing the input fields
+                // Clear the input fields
                 habitName = ""
-                frequency = ""
+                frequencyType = null
+                timeBasedMinutes = ""
+                repetitionBasedTimes = ""
             }
         }) {
             Text("Save Habit")
